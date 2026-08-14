@@ -1,0 +1,69 @@
+# Phase-target gradient-based optimization
+# Optimise a structure to hit a specific transmitted phase AND amplitude target.
+# Key pattern: extract phase via torch.angle() on zero-order field components.
+
+import numpy as np
+import torch
+from torchrdit.solver import get_solver_builder
+from torchrdit.utils import create_material
+from torchrdit.constants import Algorithm, Precision
+from torchrdit.shapes import ShapeGenerator
+
+# --- Build solver (abbreviated — see full pipeline template for details) ---
+# ... builder setup, materials, lattice, build ...
+
+# --- Differentiable parameter(s) ------------------------------------------
+radius = torch.tensor(0.20, requires_grad=True, device=device)
+thickness = torch.tensor(0.30, requires_grad=True, device=device)
+
+optimizer = torch.optim.Adam([radius, thickness], lr=0.01)
+
+# --- Phase + amplitude targets --------------------------------------------
+target_phase_deg = 170.0                                  # target phase in degrees
+target_phase_rad = torch.tensor(target_phase_deg * np.pi / 180.0, device=device)
+target_transmission = 0.8                                 # minimum transmission
+
+for epoch in range(80):
+    optimizer.zero_grad()
+
+    # Update geometry with current parameters
+    solver.update_layer_thickness(layer_index=0, thickness=thickness)
+    shapegen = ShapeGenerator(solver)
+    mask = shapegen.generate_circle_mask(center=[0, 0], radius=radius)
+    solver.update_er_with_mask(mask=mask, layer_index=0)
+
+    result = solver.solve(source)
+
+    # --- Extract phase from ZERO-ORDER transmitted field -------------------
+    # get_zero_order_transmission() returns (tx, ty, tz) complex tensors
+    # For TE: tx component;  For TM: ty component
+    tx, ty, tz = result.get_zero_order_transmission()
+    complex_coeff = tx[0]                    # first wavelength, TE x-component
+    phase_rad = torch.angle(complex_coeff)   # phase in radians  (differentiable!)
+
+    # --- Circular phase distance (handles wrap-around at +/-pi) ------------
+    phase_diff = phase_rad - target_phase_rad
+    # Wrap to [-pi, pi] — use atan2 for differentiable wrapping
+    circular_dist = torch.atan2(torch.sin(phase_diff), torch.cos(phase_diff))
+    phase_loss = circular_dist ** 2
+
+    # --- Amplitude loss: penalise low transmission -------------------------
+    amplitude_loss = torch.clamp(target_transmission - result.transmission[0], min=0.0) ** 2
+
+    # --- Combined loss -----------------------------------------------------
+    loss = phase_loss + 2.0 * amplitude_loss
+    loss.backward()
+    optimizer.step()
+
+    with torch.no_grad():
+        radius.data.clamp_(0.05, 0.45)
+        thickness.data.clamp_(0.05, 1.0)
+
+# --- Final evaluation ------------------------------------------------------
+with torch.no_grad():
+    solver.update_layer_thickness(layer_index=0, thickness=thickness)
+    shapegen = ShapeGenerator(solver)
+    mask = shapegen.generate_circle_mask(center=[0, 0], radius=radius)
+    solver.update_er_with_mask(mask=mask, layer_index=0)
+    final_result = solver.solve(source)
+    # Return final_result from solve_inverse_design()

@@ -1,0 +1,118 @@
+# Complete inverse design pipeline with MULTISTART global optimization
+# This is a self-contained example showing every step from solver setup through
+# optimization.  Adapt the parameter type (radius, mask, thickness) to your task.
+#
+# IMPORTANT: TorchRDIT's solver provides LOCAL gradient optimization only.
+# A single random initialization almost always gets stuck in a local minimum.
+# You MUST use a global optimization strategy. This example shows multistart;
+# see the "Global Optimization Patterns" skill section for alternatives
+# (differential evolution, simulated annealing, particle swarm, basin-hopping).
+
+import numpy as np
+import torch
+from torchrdit.solver import get_solver_builder
+from torchrdit.utils import create_material
+from torchrdit.constants import Algorithm, Precision
+from torchrdit.shapes import ShapeGenerator
+
+# --- 1. Materials ----------------------------------------------------------
+air = create_material(name="air", permittivity=1.0)
+high_index = create_material(name="high_index", permittivity=2.1**2)  # e.g. Ta2O5
+substrate = create_material(name="substrate", permittivity=1.5**2)    # e.g. BK7
+
+# --- 2. Solver build (builder pattern) ------------------------------------
+builder = get_solver_builder()
+builder.with_algorithm(Algorithm.RCWA)
+builder.with_precision(Precision.DOUBLE)
+builder.with_real_dimensions([256, 256])
+builder.with_k_dimensions([5, 5])
+builder.with_wavelengths(np.array([0.632]))       # wavelength in um
+builder.with_length_unit("um")
+
+period = 0.45  # um
+t1 = torch.tensor([[period, 0.0]], device=device)
+t2 = torch.tensor([[0.0, period]], device=device)
+builder.with_lattice_vectors(t1, t2)
+builder.with_materials([air, high_index, substrate])
+builder.with_ref_material("air")         # incident side
+builder.with_trn_material("substrate")   # transmission side
+
+solver = builder.build()
+
+# --- 3. Layer stack --------------------------------------------------------
+# CRITICAL: add_layer() is called ONCE here. Each call permanently appends a
+# layer to the solver (there is no clear_layers/remove_layer). NEVER call
+# add_layer() inside an optimization loop — it would create hundreds of layers.
+# To change thickness during optimization, update in-place: solver.layers[0].thickness = ...
+thickness = torch.tensor(0.2, dtype=torch.float64, device=device)
+solver.add_layer(
+    material_name="high_index",
+    thickness=thickness,
+    is_homogeneous=False,   # patterned layer
+    is_optimize=True,       # mark for optimization
+)
+# --- 4. Source -------------------------------------------------------------
+source = solver.add_source(theta=0.0, phi=0.0, pte=1.0, ptm=0.0)
+
+# --- 5. Objective function -------------------------------------------------
+# IMPORTANT: ShapeGenerator, update_er_with_mask, and solver.solve ALL
+# preserve gradients.  The key rule: every tensor in the chain from the
+# optimizable parameter to the loss must be a torch differentiable op.
+def objective(solver, source, radius):
+    shapegen = ShapeGenerator(solver)  # or ShapeGenerator.from_solver(solver)
+    mask = shapegen.generate_circle_mask(center=[0, 0], radius=radius)
+    solver.update_er_with_mask(mask=mask, layer_index=0)
+    result = solver.solve(source)
+    loss = -result.transmission[0]      # maximise transmission
+    return loss
+
+# --- 6. MULTISTART global exploration + local refinement -------------------
+# Sweep 50-100 random seeds, each with a short gradient refinement,
+# then polish the best candidate with more steps.
+NUM_SEEDS = 80          # global exploration: 50-100 random starts
+SHORT_EPOCHS = 20       # quick local refinement per seed
+
+best_radius = None
+best_loss = float("inf")
+
+for seed in range(NUM_SEEDS):
+    torch.manual_seed(seed)
+    # Random initialization within physical bounds
+    radius = torch.tensor(
+        0.05 + torch.rand(1, device=device).item() * (period / 2 - 0.06),
+        requires_grad=True,
+        device=device,
+    )
+    optimizer = torch.optim.Adam([radius], lr=0.01)
+
+    for epoch in range(SHORT_EPOCHS):
+        optimizer.zero_grad()
+        loss = objective(solver, source, radius)
+        loss.backward()
+        optimizer.step()
+        with torch.no_grad():
+            radius.data = torch.clamp(radius.data, 0.05, period / 2 - 0.01)
+
+    current_loss = float(loss.detach().item())
+    if current_loss < best_loss:
+        best_loss = current_loss
+        best_radius = radius.detach().clone()
+
+# --- 7. Refine the best candidate further ---------------------------------
+radius = best_radius.clone().requires_grad_(True)
+optimizer = torch.optim.Adam([radius], lr=0.005)
+for epoch in range(80):   # deeper local polish: 50-100 steps
+    optimizer.zero_grad()
+    loss = objective(solver, source, radius)
+    loss.backward()
+    optimizer.step()
+    with torch.no_grad():
+        radius.data = torch.clamp(radius.data, 0.05, period / 2 - 0.01)
+
+# --- 8. Final result -------------------------------------------------------
+with torch.no_grad():
+    shapegen = ShapeGenerator(solver)
+    mask = shapegen.generate_circle_mask(center=[0, 0], radius=radius)
+    solver.update_er_with_mask(mask=mask, layer_index=0)
+    final_result = solver.solve(source)
+    # final_result is your SolverResults — return it from solve_inverse_design()

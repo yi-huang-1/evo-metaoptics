@@ -1,0 +1,29 @@
+# Common Design Patterns
+
+# 1. Multilayer Stack (Bragg reflector example)
+# NOTE: thickness tensors must be created on the same device as the solver
+n_periods = 10
+for i in range(n_periods):
+    solver.add_layer(material_name='high_index', thickness=torch.tensor(d1, device=device))
+    solver.add_layer(material_name='low_index', thickness=torch.tensor(d2, device=device))
+
+# 2. Metasurface with periodic array
+# Set up lattice vectors for periodic boundary conditions
+# NOTE: lattice vectors must be created on the same device as the solver
+period = 0.5  # um
+t1 = torch.tensor([[period, 0]], device=device)
+t2 = torch.tensor([[0, period]], device=device)
+builder.with_lattice_vectors(t1, t2)
+
+# 3. Parameter sweep
+thicknesses = np.linspace(0.1, 0.5, 50)
+transmissions = []
+for t in thicknesses:
+    solver_temp = create_new_solver_with_thickness(t)
+    result = solver_temp.solve(source)
+    transmissions.append(result.transmission[0].item())
+
+# 4. Multi-wavelength optimization
+# Define wavelengths spanning your range of interest
+wavelengths = np.linspace(1.4, 1.7, 10)  # um
+builder.with_wavelengths(wavelengths)

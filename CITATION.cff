@@ -1,0 +1,47 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the associated article."
+title: "evo-metaoptics"
+type: software
+authors:
+  - given-names: "Yi"
+    family-names: "Huang"
+    orcid: "https://orcid.org/0000-0002-8399-3225"
+  - given-names: "Bowen"
+    family-names: "Zheng"
+  - given-names: "Yunxi"
+    family-names: "Dong"
+    orcid: "https://orcid.org/0009-0004-8306-6714"
+  - given-names: "Hong"
+    family-names: "Tang"
+  - given-names: "Huan"
+    family-names: "Zhao"
+  - given-names: "S. M. Rakibul Hasan"
+    family-names: "Shawon"
+  - given-names: "Hualiang"
+    family-names: "Zhang"
+repository-code: "https://github.com/yi-huang-1/evo-metaoptics"
+preferred-citation:
+  type: article
+  title: "A Self-Evolving Agentic Framework for Metasurface Inverse Design"
+  authors:
+    - given-names: "Yi"
+      family-names: "Huang"
+      orcid: "https://orcid.org/0000-0002-8399-3225"
+    - given-names: "Bowen"
+      family-names: "Zheng"
+    - given-names: "Yunxi"
+      family-names: "Dong"
+      orcid: "https://orcid.org/0009-0004-8306-6714"
+    - given-names: "Hong"
+      family-names: "Tang"
+    - given-names: "Huan"
+      family-names: "Zhao"
+    - given-names: "S. M. Rakibul Hasan"
+      family-names: "Shawon"
+    - given-names: "Hualiang"
+      family-names: "Zhang"
+  journal: "Laser & Photonics Reviews"
+  year: 2026
+  month: 8
+  doi: "10.1002/lpor.71739"
+  url: "https://doi.org/10.1002/lpor.71739"

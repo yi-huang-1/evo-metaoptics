@@ -1,0 +1,36 @@
+# Gradient-based optimization workflow
+
+# 1. Define optimizable parameters
+# Ensure all optimizable parameters are placed on the correct device
+params = {
+    'radius': torch.tensor(0.2, requires_grad=True, device=device),
+    'thickness': torch.tensor(0.3, requires_grad=True, device=device)
+}
+
+# 2. Define objective function
+def objective_function(solver, source, params):
+    # Update geometry based on parameters
+    update_device_with_params(solver, params)
+    
+    # Solve
+    result = solver.solve(source)
+    
+    # Calculate loss (example: target specific transmission)
+    target_transmission = 0.95
+    loss = (result.transmission[0] - target_transmission)**2
+    
+    return loss
+
+# 3. Optimization loop with Adam
+optimizer = torch.optim.Adam(params.values(), lr=0.01)
+
+for epoch in range(200):
+    optimizer.zero_grad()
+    loss = objective_function(solver, source, params)
+    loss.backward()
+    optimizer.step()
+    
+    # Apply physical constraints
+    with torch.no_grad():
+        params['radius'].clamp_(0.05, 0.45)
+        params['thickness'].clamp_(0.1, 1.0)

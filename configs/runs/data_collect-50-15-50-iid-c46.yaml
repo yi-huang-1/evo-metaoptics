@@ -1,0 +1,36 @@
+name: data_collect-50-15-50-iid-c46
+
+experiment:
+  env: metaoptics_inverse_design
+  model: claude-sonnet-4-6
+
+data:
+  train_data: meta_design_tasks/splits_50_15_50/iid_train.jsonl
+  val_data: meta_design_tasks/splits_50_15_50/iid_val.jsonl
+  test_data: meta_design_tasks/splits_50_15_50/iid_test.jsonl
+  split: iid
+
+execution:
+  iterations: 5
+  start_iter: 0
+  train_limit: null
+  val_limit: null
+  test_limit: null
+  train_batch_size: 20
+  codegen_rounds: 3
+  codegen_inner_attempts: 2
+  pi_timeout_s: 1200
+
+mode:
+  skill_path: null
+  no_meta_agent: false
+
+traces:
+  pi_session_traces: true
+
+bundle:
+  enabled: true
+
+env_vars:
+  MCE_LEARNING_MIN_TRAIN_SAMPLES: "1"
+  MCE_VALIDATION_ATTEMPTS: "3"

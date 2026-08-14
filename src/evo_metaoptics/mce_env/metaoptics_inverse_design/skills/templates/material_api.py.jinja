@@ -1,0 +1,19 @@
+# Material-related API clarification
+
+CORRECT API calls:
+- solver.update_ref_material('material_name')  # Set bottom/incident material
+- solver.update_trn_material('material_name')  # Set top material
+- builder.with_ref_material(material_object)   # During building
+- builder.with_trn_material(material_object)   # During building
+
+INCORRECT (these don't exist):
+- solver.update_inc_material()  ❌
+- builder.with_inc_material()   ❌
+- solver.set_incident_material() ❌
+
+Remember: The incident medium is the ref_material (reflection/bottom layer)
+
+DEVICE PLACEMENT NOTE:
+- Material creation (create_material) is device-agnostic; it only specifies permittivity values.
+- Device placement for the solver happens via builder.with_device(device) in the solver setup phase.
+- Material objects are passed to the solver/builder; the solver's device setting applies to all tensors.

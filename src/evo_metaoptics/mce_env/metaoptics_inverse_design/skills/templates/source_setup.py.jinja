@@ -1,0 +1,26 @@
+# Define the light source
+
+# Create source with specified properties
+# Note: angle parameters (theta, phi) are in radians; use the 'degrees' unit conversion
+source = solver.add_source(
+    theta=0 * degrees,  # Incident angle from normal
+    phi=0 * degrees,    # Azimuthal angle
+    pte=1.0,           # TE polarization amplitude
+    ptm=0.0            # TM polarization amplitude
+)
+
+# For angled incidence:
+# source = solver.add_source(theta=30*degrees, phi=0, pte=1, ptm=0)
+
+# For unpolarized light (equal TE and TM):
+# source = solver.add_source(theta=0, phi=0, pte=1/np.sqrt(2), ptm=1/np.sqrt(2))
+
+# --- Dual-Polarization Batched Sources (for TE/TM separation) ---
+# When the goal is "maximize TE reflection, minimize TM reflection" (or similar),
+# create two sources with pure polarizations and batch-solve:
+#
+# source_te = solver.add_source(theta=0, phi=0, pte=1.0, ptm=0.0)
+# source_tm = solver.add_source(theta=0, phi=0, pte=0.0, ptm=1.0)
+# results = solver.solve([source_te, source_tm])
+#   results.reflection[0] = R_TE, results.reflection[1] = R_TM
+#   results.transmission[0] = T_TE, results.transmission[1] = T_TM

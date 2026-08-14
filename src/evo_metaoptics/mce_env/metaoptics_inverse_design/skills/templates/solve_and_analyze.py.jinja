@@ -1,0 +1,32 @@
+# Solve the electromagnetic problem
+result = solver.solve(source)
+
+# Access simulation results
+# Overall efficiencies (summed over all diffraction orders)
+transmission_total = result.transmission  # Shape: (n_wavelengths,)
+reflection_total = result.reflection    # Shape: (n_wavelengths,)
+
+# Print results
+# NOTE: For reporting/printing, transfer tensors to CPU before scalar extraction
+for i, wavelength in enumerate(solver.lam0):
+    print(f"λ = {wavelength*1000:.1f} nm:")
+    print(f"  Transmission: {transmission_total[i].detach().cpu().item()*100:.2f}%")
+    print(f"  Reflection: {reflection_total[i].detach().cpu().item()*100:.2f}%")
+    print(f"  Absorption: {(1-transmission_total[i]-reflection_total[i]).detach().cpu().item()*100:.2f}%")
+
+# Access field components (zero order)
+tx, ty, tz = result.get_zero_order_transmission()
+rx, ry, rz = result.get_zero_order_reflection()
+
+# Calculate phase
+# NOTE: For pure torch analysis, keep tensors on device; only transfer to CPU for export/NumPy
+phase_t = torch.angle(tx[0])  # Phase of x-component, first wavelength (stays on device)
+amplitude_t = torch.abs(tx[0])  # Amplitude (stays on device)
+
+# For NumPy export or scalar extraction, use .detach().cpu():
+# phase_t_numpy = torch.angle(tx[0]).detach().cpu().numpy()
+# amplitude_scalar = torch.abs(tx[0]).detach().cpu().item()
+
+# Access diffraction efficiencies for specific orders
+# efficiency = result.get_order_transmission_efficiency(order_x=1, order_y=0)
+# For export: efficiency_numpy = efficiency.detach().cpu().numpy()

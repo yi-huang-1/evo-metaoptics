@@ -1,0 +1,37 @@
+# Basic optimization setup for inverse design
+
+# Define parameter to optimize (example: circle radius)
+# Ensure optimizable parameters are placed on the correct device
+radius = torch.tensor(0.2, requires_grad=True, device=device)  # Initial value
+
+# Define objective function
+def objective(solver, source, radius):
+    # Update device geometry
+    mask = shapegen.generate_circle_mask(center=[0, 0], radius=radius)
+    solver.update_er_with_mask(mask=mask, layer_index=0)
+    
+    # Solve
+    result = solver.solve(source)
+    
+    # Define loss (example: maximize transmission at first wavelength)
+    loss = -result.transmission[0]  # Negative because we minimize
+    
+    return loss
+
+# Setup optimizer
+optimizer = torch.optim.Adam([radius], lr=0.01)
+
+# Training loop
+num_epochs = 100
+for epoch in range(num_epochs):
+    optimizer.zero_grad()
+    loss = objective(solver, source, radius)
+    loss.backward()
+    optimizer.step()
+    
+    # Optional: Apply constraints
+    with torch.no_grad():
+        radius.data = torch.clamp(radius.data, 0.05, 0.45)
+    
+    if epoch % 10 == 0:
+        print(f"Epoch {epoch}: Loss = {loss.item():.6f}, Radius = {radius.item():.3f}")

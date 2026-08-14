@@ -1,0 +1,30 @@
+# Create solver using builder pattern
+builder = get_solver_builder()
+
+# Normalize device: ensure it's a valid string (e.g., "cpu")
+# This allows the solver and all tensors to be placed on the correct compute device.
+device = device if isinstance(device, str) else "cpu"
+
+# Essential configuration
+builder.with_algorithm(Algorithm.RCWA)  # or Algorithm.RDIT
+builder.with_precision(Precision.DOUBLE)  # SINGLE or DOUBLE
+builder.with_real_dimensions([512, 512])  # Real space grid resolution
+builder.with_k_dimensions([9, 9])  # Fourier space harmonics
+builder.with_wavelengths(np.array([1.55]))  # Wavelengths in um
+builder.with_length_unit('um')
+
+# For periodic structures, define lattice vectors
+# Place lattice tensors on the correct device early
+period = 0.5  # um
+t1 = torch.tensor([[period, 0]], device=device)
+t2 = torch.tensor([[0, period]], device=device)
+builder.with_lattice_vectors(t1, t2)
+
+# Set compute device explicitly: all solver tensors will be placed on this device
+builder.with_device(device)
+
+# For RDIT algorithm only: set order (typically 8-15)
+# builder.with_rdit_order(10)
+
+# Build the solver
+solver = builder.build()

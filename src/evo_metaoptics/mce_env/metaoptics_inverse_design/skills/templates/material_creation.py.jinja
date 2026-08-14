@@ -1,0 +1,30 @@
+# Create materials
+# NOTE: Materials are device-agnostic (scalar permittivity values).
+# Device placement happens in the solver setup via .with_device(device) in the builder chain.
+
+# Method 1: Using permittivity directly
+air = create_material(name='air', permittivity=1.0)
+silicon = create_material(name='silicon', permittivity=11.7)  # at 1.55um
+
+# Method 2: Using refractive index (n)
+# permittivity = n^2
+glass = create_material(name='glass', permittivity=1.5**2)
+
+# Method 3: Complex permittivity (for lossy materials)
+gold = create_material(name='gold', permittivity=complex(-100, 10))
+
+# Method 4: Dispersive material from file
+# dispersive_si = create_material(
+#     name='silicon_dispersive',
+#     dielectric_dispersion=True,
+#     user_dielectric_file='Si_data.txt',
+#     data_format='wl-eps',  # wavelength-permittivity format
+#     data_unit='um'
+# )
+
+# Add materials to solver
+solver.add_materials(material_list=[air, silicon])
+# Add other materials as needed
+
+# IMPORTANT: Material creation is independent of device placement.
+# The solver device is set via builder.with_device(device) in the solver setup phase.

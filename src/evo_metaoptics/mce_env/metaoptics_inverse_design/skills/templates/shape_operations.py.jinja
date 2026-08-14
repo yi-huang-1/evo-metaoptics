@@ -1,0 +1,32 @@
+# Available shape generation functions
+
+# Circle
+circle = shapegen.generate_circle_mask(
+    center=[x, y],
+    radius=r,
+    soft_edge=0.001
+)
+
+# Rectangle
+rectangle = shapegen.generate_rectangle_mask(
+    center=[x, y],
+    x_size=w,
+    y_size=h,
+    angle=theta,  # Rotation angle in degrees
+    soft_edge=0.001
+)
+
+# Polygon
+vertices = [[x1, y1], [x2, y2], [x3, y3]]  # List of vertices
+polygon = shapegen.generate_polygon_mask(
+    polygon_points=vertices,
+    center=[x, y],
+    angle=theta,
+    soft_edge=0.001
+)
+
+# Combine shapes using boolean operations
+union = shapegen.combine_masks(mask1, mask2, operation='union')
+intersection = shapegen.combine_masks(mask1, mask2, operation='intersection')
+difference = shapegen.combine_masks(mask1, mask2, operation='difference')
+subtract = shapegen.combine_masks(mask1, mask2, operation='subtract')

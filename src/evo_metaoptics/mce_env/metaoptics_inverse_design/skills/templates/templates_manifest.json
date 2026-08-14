@@ -1,0 +1,312 @@
+[
+  {
+    "id": "basic_imports",
+    "category": "basic",
+    "sha256": "e470fddf715e63265aa389fa12a2733ca0dcbb60a0f1470c86dfab514c59796b",
+    "tags": [
+      "imports",
+      "torchrdit",
+      "numpy",
+      "torch",
+      "matplotlib",
+      "device"
+    ],
+    "summary": "Essential import statements for TorchRDIT simulations with device parameter guidance.",
+    "est_tokens": 95
+  },
+  {
+    "id": "common_mistakes",
+    "category": "clarifications",
+    "sha256": "28530d3905db702a5f93ed85077cd93124d47913bb47b22360b1021661f6a4a1",
+    "tags": [
+      "common_mistakes",
+      "layer_order",
+      "inc_material",
+      "material_setup",
+      "layer_indexing",
+      "gradient_tracking",
+      "device_export",
+      "cpu_transfer"
+    ],
+    "summary": "Common mistakes to avoid: layer ordering, incident material, gradient tracking, device/export pitfalls.",
+    "est_tokens": 210
+  },
+  {
+    "id": "common_patterns",
+    "category": "basic",
+    "sha256": "b8075442e2a9283868cf91b436bc21476e1f5d7d806768075ff30d4c546a44ab",
+    "tags": [
+      "patterns",
+      "multilayer",
+      "Bragg",
+      "metasurface",
+      "parameter_sweep",
+      "multi_wavelength"
+    ],
+    "summary": "Common design patterns: multilayer stacks, metasurfaces, parameter sweeps, multi-wavelength.",
+    "est_tokens": 228
+  },
+  {
+    "id": "gradient_based",
+    "category": "optimization",
+    "sha256": "397f1db104b4a6ae07f73455661eb032820e7f4b48d68b0203460c70894e0bc2",
+    "tags": [
+      "gradient_based",
+      "optimization",
+      "Adam",
+      "requires_grad",
+      "clamp",
+      "workflow"
+    ],
+    "summary": "Complete gradient-based optimization workflow with parameter constraints.",
+    "est_tokens": 245
+  },
+  {
+    "id": "gradient_full_pipeline",
+    "category": "optimization",
+    "sha256": "27fcb84927a913b32d30863143e78546eca6e4c8d5979145b92d41277f1aa965",
+    "tags": [
+      "gradient",
+      "optimization",
+      "full_pipeline",
+      "Adam",
+      "requires_grad",
+      "ShapeGenerator",
+      "inverse_design"
+    ],
+    "summary": "Complete end-to-end differentiable optimization pipeline: solver build, ShapeGenerator, Adam, backward.",
+    "est_tokens": 1211
+  },
+  {
+    "id": "gradient_multiangle",
+    "category": "optimization",
+    "sha256": "3f0ff904f331f8c98e9fc0609fb2d1587ecaee8a63cadb19127164cb954177f9",
+    "tags": [
+      "gradient",
+      "optimization",
+      "multi_angle",
+      "batched_sources",
+      "robust_design",
+      "variance"
+    ],
+    "summary": "Multi-angle gradient optimization with batched solver.solve(sources) and combined loss.",
+    "est_tokens": 576
+  },
+  {
+    "id": "gradient_phase_target",
+    "category": "optimization",
+    "sha256": "6bd98fd829304dec639a3d4615bb1ad91a65ab02d0cf8f9ac52ec98e24a4bbd1",
+    "tags": [
+      "gradient",
+      "optimization",
+      "phase_target",
+      "torch_angle",
+      "circular_distance",
+      "amplitude"
+    ],
+    "summary": "Phase-target gradient optimization with circular phase distance and amplitude constraint.",
+    "est_tokens": 766
+  },
+  {
+    "id": "layer_order",
+    "category": "clarifications",
+    "sha256": "2e45de244e18aabc3b6fa65b759e3e27c11859a21234910a81a635bd89edbe5e",
+    "tags": [
+      "layer_order",
+      "ref_material",
+      "trn_material",
+      "stack_direction",
+      "z_direction"
+    ],
+    "summary": "Critical layer ordering convention: ref (bottom) \u2192 layers \u2192 trn (top).",
+    "est_tokens": 227
+  },
+  {
+    "id": "layer_stack",
+    "category": "basic",
+    "sha256": "a2a2ec8832512c8a836c64b7532e931bd692b3ad689efec46a3606fe4f707176",
+    "tags": [
+      "layers",
+      "layer_stack",
+      "add_layer",
+      "ref_material",
+      "trn_material",
+      "layer_order"
+    ],
+    "summary": "Build the layer stack with ref/trn materials and finite layers.",
+    "est_tokens": 237
+  },
+  {
+    "id": "material_api",
+    "category": "clarifications",
+    "sha256": "1964f365ec2a14e71f337d22da9c4b09f08648bbef4698b03b69d89c37d8e523",
+    "tags": [
+      "material_api",
+      "update_ref_material",
+      "update_trn_material",
+      "inc_material",
+      "forbidden",
+      "device"
+    ],
+    "summary": "Correct vs incorrect material API calls; ref_material is the incident medium; device placement via builder.",
+    "est_tokens": 155
+  },
+  {
+    "id": "material_creation",
+    "category": "basic",
+    "sha256": "abcb6ee4a5b8979dc12d23f9932715b13206c3fe14f5201af3fd708a28495881",
+    "tags": [
+      "materials",
+      "create_material",
+      "permittivity",
+      "dispersive",
+      "dielectric",
+      "device"
+    ],
+    "summary": "Create materials from permittivity, refractive index, or dispersive data files; device-agnostic material creation.",
+    "est_tokens": 225
+  },
+  {
+    "id": "multi_objective",
+    "category": "optimization",
+    "sha256": "93bc9958467de2a4f4b4738e0b57b552bab60e5c0bf7b3035765da3fc560ca2f",
+    "tags": [
+      "multi_objective",
+      "optimization",
+      "weighted_sum",
+      "transmission",
+      "reflection",
+      "blocking"
+    ],
+    "summary": "Multi-objective optimization with weighted loss combination.",
+    "est_tokens": 151
+  },
+  {
+    "id": "optimization_basic",
+    "category": "basic",
+    "sha256": "b064d9d7e7c07eef5d26d277edc0d578b85635f596cc27f72943b476ea0c2a91",
+    "tags": [
+      "optimization",
+      "inverse_design",
+      "Adam",
+      "gradient",
+      "requires_grad",
+      "loss",
+      "clamp"
+    ],
+    "summary": "Basic gradient-based optimization setup for inverse design with Adam optimizer.",
+    "est_tokens": 273
+  },
+  {
+    "id": "patterned_layer",
+    "category": "basic",
+    "sha256": "4ca526463944c906bc7e5391686db43a2ea8ede46ec879ef0773b6c095119ba3",
+    "tags": [
+      "patterned_layer",
+      "is_homogeneous",
+      "ShapeGenerator",
+      "update_er_with_mask",
+      "mask"
+    ],
+    "summary": "Create non-homogeneous (patternable) layers with shape masks.",
+    "est_tokens": 288
+  },
+  {
+    "id": "shape_operations",
+    "category": "basic",
+    "sha256": "19d49af06eb30d68e498da417bec0311ed7729a1742e1ca90b9f42d9c0094b5c",
+    "tags": [
+      "shapes",
+      "circle_mask",
+      "rectangle_mask",
+      "polygon_mask",
+      "combine_masks",
+      "union",
+      "intersection",
+      "difference"
+    ],
+    "summary": "Generate and combine geometric shape masks (circle, rectangle, polygon).",
+    "est_tokens": 212
+  },
+  {
+    "id": "solve_and_analyze",
+    "category": "basic",
+    "sha256": "5661dcdd043950eb6fb0ce9374d9888b18f27402b826406d8b9e65d27a910886",
+    "tags": [
+      "solve",
+      "results",
+      "transmission",
+      "reflection",
+      "phase",
+      "get_zero_order_transmission",
+      "diffraction",
+      "cpu_transfer",
+      "export"
+    ],
+    "summary": "Solve the EM problem and access transmission, reflection, phase, and diffraction results with CPU-transfer guidance for export.",
+    "est_tokens": 310
+  },
+  {
+    "id": "solver_setup",
+    "category": "basic",
+    "sha256": "85a30e727dd711190862877526abf9b7a6b9a41e64474bb21b6f163629739467",
+    "tags": [
+      "solver",
+      "builder",
+      "get_solver_builder",
+      "algorithm",
+      "precision",
+      "grid",
+      "harmonics",
+      "lattice_vectors"
+    ],
+    "summary": "Create and configure a TorchRDIT solver using the builder pattern.",
+    "est_tokens": 212
+  },
+  {
+    "id": "source_setup",
+    "category": "basic",
+    "sha256": "26856e3e92989c6c0098fad855492d3d65f184c63a62fd812f128ad52b0eeea1",
+    "tags": [
+      "source",
+      "add_source",
+      "theta",
+      "phi",
+      "pte",
+      "ptm",
+      "polarization",
+      "incidence"
+    ],
+    "summary": "Define light source properties (angle, polarization) for simulation.",
+    "est_tokens": 128
+  },
+  {
+    "id": "unit_setup",
+    "category": "basic",
+    "sha256": "be162d9996ba5ca17fb96ec1283408865d4c48add1533f5c5b2f3f362e6e83d3",
+    "tags": [
+      "units",
+      "um",
+      "nm",
+      "degrees",
+      "conversion"
+    ],
+    "summary": "Unit definitions (um, nm, mm, degrees) for TorchRDIT calculations.",
+    "est_tokens": 50
+  },
+  {
+    "id": "visualization",
+    "category": "basic",
+    "sha256": "58097549988ad27b7b6bb23fb68b75d9f29478b27f0774d1d8a95dde341af01b",
+    "tags": [
+      "visualization",
+      "plot_layer",
+      "matplotlib",
+      "display_fitted_permittivity",
+      "cpu_transfer",
+      "export"
+    ],
+    "summary": "Visualization functions for layer structures and simulation results with CPU-transfer guidance for matplotlib.",
+    "est_tokens": 230
+  }
+]

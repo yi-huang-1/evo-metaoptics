@@ -1,0 +1,27 @@
+# CRITICAL: Understanding Layer Order in TorchRDIT
+
+The layer stack in TorchRDIT follows this structure:
+
+    ↑ z-direction (upward)
+    |
+    |  Transmission region (top) - semi-infinite
+    |  ================================
+    |  Layer N-1 (last added layer)
+    |  --------------------------------
+    |  Layer N-2
+    |  --------------------------------
+    |  ...
+    |  --------------------------------
+    |  Layer 1 (second added layer)
+    |  --------------------------------
+    |  Layer 0 (first added layer)
+    |  ================================
+    |  Reflection region (bottom) - semi-infinite
+    |
+    ↓ Light incident from here
+
+Key points:
+1. Light is incident from the BOTTOM (reflection region)
+2. The reflection region is also the incident medium
+3. Layers are numbered in the order they are added (0, 1, 2, ...)
+4. NO 'incident' material - use 'ref_material' for the incident medium

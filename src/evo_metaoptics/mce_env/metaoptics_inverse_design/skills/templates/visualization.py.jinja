@@ -1,0 +1,31 @@
+# Visualization functions
+
+# Plot layer structure (for patterned layers)
+fig, ax = plt.subplots(figsize=(6, 6))
+plot_layer(solver, layer_index=0, fig_ax=ax, 
+           title='Layer Structure', 
+           labels=('x (μm)', 'y (μm)'))
+plt.show()
+
+# For dispersive materials, plot fitted permittivity
+# display_fitted_permittivity(solver, fig_ax=ax)
+
+# Custom visualization of results
+# NOTE: For matplotlib plotting, transfer tensors to CPU before passing to plot functions
+wavelengths_nm = solver.lam0 * 1000  # Convert to nm (scalar, device-agnostic)
+plt.figure(figsize=(8, 6))
+# Transfer result tensors to CPU for matplotlib consumption
+transmission_cpu = result.transmission.detach().cpu().numpy()
+reflection_cpu = result.reflection.detach().cpu().numpy()
+plt.plot(wavelengths_nm, transmission_cpu * 100, 'b-', label='Transmission')
+plt.plot(wavelengths_nm, reflection_cpu * 100, 'r-', label='Reflection')
+plt.xlabel('Wavelength (nm)')
+plt.ylabel('Efficiency (%)')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# For field visualization, transfer to CPU before NumPy operations:
+# tx_cpu = tx.detach().cpu().numpy()
+# phase_cpu = torch.angle(tx).detach().cpu().numpy()
+# plt.imshow(phase_cpu, cmap='hsv')

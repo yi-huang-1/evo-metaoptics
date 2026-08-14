@@ -1,0 +1,40 @@
+# IMPORTANT: Layer Stack Structure
+# The layer ordering in TorchRDIT is:
+# 
+# TOP (Transmission side): trn_material
+#            ↑
+#        Layer N-1
+#            ↑
+#          ...
+#            ↑
+#        Layer 1
+#            ↑
+#        Layer 0
+#            ↑
+# BOTTOM (Reflection/Incident side): ref_material
+#
+# Light is incident from the bottom (ref_material side)
+#
+# CRITICAL: add_layer() is a ONE-TIME setup call. Each call permanently
+# appends a layer to the solver. There is no clear_layers() or
+# remove_layer(). NEVER call add_layer() inside an optimization loop.
+# To change layer properties during optimization, modify them in-place:
+#   solver.layers[0].thickness = new_thickness
+# Set the bottom material (where light comes from)
+solver.update_ref_material('air')  # or your substrate material
+
+# Add layers from bottom to top
+# NOTE: thickness tensors must be created on the same device as the solver
+solver.add_layer(
+    material_name='silicon',
+    thickness=torch.tensor(0.22, dtype=torch.float64, device=device),  # in um
+    is_homogeneous=True  # False for patterned layers
+)
+
+# Add more layers as needed...
+
+# Set the top material
+solver.update_trn_material('air')  # or your superstrate material
+
+# NOTE: There is NO 'inc_material' or 'update_inc_material' in TorchRDIT!
+# The incident medium is the ref_material (reflection/bottom layer)

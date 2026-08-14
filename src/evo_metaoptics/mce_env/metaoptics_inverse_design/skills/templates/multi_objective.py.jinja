@@ -1,0 +1,18 @@
+# Multi-objective optimization
+
+def multi_objective(solver, source, params):
+    result = solver.solve(source)
+    
+    # Multiple objectives
+    obj1 = (result.transmission[0] - 0.9)**2  # Target 90% at λ1
+    obj2 = (result.transmission[1] - 0.1)**2  # Target 10% at λ2
+    obj3 = torch.abs(result.reflection[0] - 0.05)  # Target 5% reflection
+    
+    # Weighted sum
+    weights = [1.0, 1.0, 0.5]
+    total_loss = weights[0]*obj1 + weights[1]*obj2 + weights[2]*obj3
+    
+    return total_loss
+
+# Or use separate losses for monitoring
+losses = {'transmission': obj1, 'blocking': obj2, 'reflection': obj3}

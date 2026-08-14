@@ -1,0 +1,136 @@
+[
+  {
+    "id": "common_pitfalls",
+    "sha256": "b4f35833cd05ff59d040c8ad022f5b7b120bda107bdc3564a2e8609c1b70a07a",
+    "tags": [
+      "common_mistakes",
+      "layer_order",
+      "material_api",
+      "ref_trn_material",
+      "import_errors",
+      "timeout"
+    ],
+    "summary": "Common TorchRDIT setup and optimization mistakes with direct corrective actions.",
+    "est_tokens": 358
+  },
+  {
+    "id": "core_rules",
+    "sha256": "39c4c40db06247a403f6f3283b8ab204129e6b374f82173b0578c62688d299f1",
+    "tags": [
+      "rules",
+      "conventions",
+      "imports",
+      "unit_conventions",
+      "layer_order",
+      "best_practices"
+    ],
+    "summary": "Essential TorchRDIT conventions, imports, function contract, and unit rules.",
+    "est_tokens": 513
+  },
+  {
+    "id": "materials_layers",
+    "sha256": "09271bb720ba46995ecf9ede15a0443b14ebb621a6377be2f1fe9e852310e880",
+    "tags": [
+      "materials",
+      "create_material",
+      "material_db",
+      "layer_stack",
+      "add_layer",
+      "dispersion",
+      "ref_material",
+      "trn_material"
+    ],
+    "summary": "Material creation patterns and layer-stack construction with boundary media rules.",
+    "est_tokens": 747
+  },
+  {
+    "id": "optimization_patterns",
+    "sha256": "05ef4461677a09474f7251304b7d343fcb7936cb07caf4f5d40f2a6e8143f4c0",
+    "tags": [
+      "optimization",
+      "gradient_based",
+      "gradient_free",
+      "Adam",
+      "multistart",
+      "differential_evolution",
+      "dual_annealing",
+      "particle_swarm",
+      "basin_hopping",
+      "scipy"
+    ],
+    "summary": "Global optimization recipes: multistart, differential evolution, dual annealing, PSO, basin-hopping + local gradient polish.",
+    "est_tokens": 1626
+  },
+  {
+    "id": "patterning_shapes",
+    "sha256": "6d25f244324a7ffff88b1aec109ee049006bf76b73ccef01b6c977a72b4a2523",
+    "tags": [
+      "shapes",
+      "ShapeGenerator",
+      "circle_mask",
+      "rectangle_mask",
+      "polygon",
+      "combine_masks",
+      "update_er_with_mask"
+    ],
+    "summary": "ShapeGenerator mask primitives, boolean mask operations, and permittivity updates.",
+    "est_tokens": 349
+  },
+  {
+    "id": "postprocess_amplitude",
+    "sha256": "1ebd94a253bca5c84e619b62e089788bb42b212282935583aac751e5074403f2",
+    "tags": [
+      "amplitude",
+      "transmission",
+      "reflection",
+      "efficiency",
+      "diffraction_orders",
+      "FieldComponents"
+    ],
+    "summary": "Amplitude and efficiency extraction APIs, diffraction-order tools, and serialization.",
+    "est_tokens": 309
+  },
+  {
+    "id": "postprocess_phase",
+    "sha256": "83897031f3a2d5fb5f4135e1fa313c074c3d9dc396f099d3037a6366ec54bf6f",
+    "tags": [
+      "phase",
+      "torch.angle",
+      "phase_extraction",
+      "get_zero_order_transmission",
+      "complex_field"
+    ],
+    "summary": "Zero-order complex-field handling with phase and amplitude scalar extraction.",
+    "est_tokens": 227
+  },
+  {
+    "id": "solver_setup",
+    "sha256": "e585deda0a55145c72e1b309d95af221b1af43386d788fe9c02184a0bdf05fb6",
+    "tags": [
+      "solver",
+      "builder",
+      "get_solver_builder",
+      "algorithm",
+      "precision",
+      "wavelengths",
+      "grid",
+      "harmonics"
+    ],
+    "summary": "Complete solver builder workflow with method reference and configuration schema.",
+    "est_tokens": 604
+  },
+  {
+    "id": "source_solve",
+    "sha256": "0b6a7e5a59671ea8a38063baf2bcf35fb20ba8e26c8f07b2449517026e6b44f5",
+    "tags": [
+      "source",
+      "add_source",
+      "solve",
+      "batched_sources",
+      "transmission",
+      "reflection"
+    ],
+    "summary": "Source setup and execution patterns for single-source and batched solves.",
+    "est_tokens": 246
+  }
+]

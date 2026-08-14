@@ -1,0 +1,40 @@
+# Common Mistakes to Avoid
+
+1. Layer ordering confusion:
+   ❌ Adding layers from top to bottom
+   ✓ Add layers from bottom to top
+
+2. Incident material:
+   ❌ solver.update_inc_material('air')
+   ✓ solver.update_ref_material('air')
+
+3. Forgetting material setup:
+   ❌ Using material names without adding materials first
+   ✓ Always add materials before referencing them
+
+4. Layer indexing:
+   ❌ Assuming layer 0 is at the top
+   ✓ Layer 0 is the first layer added (bottom-most)
+
+5. Gradient tracking:
+   ❌ Not setting requires_grad=True for optimizable parameters
+   ✓ Always enable gradients for parameters you want to optimize
+
+6. Layer accumulation in loops (CRITICAL):
+   ❌ Calling solver.add_layer(...) inside an optimization loop
+   ✓ Call add_layer() ONCE before the loop; modify solver.layers[i].thickness in-place
+   NOTE: add_layer() permanently appends — there is no clear_layers() or remove_layer()
+
+7. Missing SolverResults import:
+   ❌ def solve_inverse_design(*, device: str = "cpu") -> SolverResults:  # without importing it
+   ✓ from torchrdit.results import SolverResults  # always import before use
+
+8. Device/Export pitfall (CRITICAL):
+   ❌ Passing device tensors directly to NumPy or matplotlib
+   ❌ result.transmission.numpy()  # may fail if tensor requires grad or is not on CPU
+   ❌ plt.plot(result.transmission)  # may fail if tensor requires grad
+   ✓ Use .detach().cpu() before NumPy/matplotlib/export operations
+   ✓ transmission_cpu = result.transmission.detach().cpu().numpy()
+   ✓ plt.plot(transmission_cpu)
+   NOTE: Keep pure torch analysis paths differentiable (no .detach() in optimization loops)
+   NOTE: Only transfer to CPU for reporting, visualization, and final export

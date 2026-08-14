@@ -1,0 +1,2 @@
+{"query":"Design from query key","execution_plan":{"mode":"optimize","budget":{"max_steps":20}},"gt_eval":{"wavelength_um":[1.55],"criteria":[{"expr":"float(r.transmission[0])","operation":">=","target":0.8}]}}
+{"question":"Design from question key","gt_eval":{"wavelength_um":[1.31],"criteria":[{"expr":"float(r.reflection[0])","operation":"<=","target":0.2}]}}

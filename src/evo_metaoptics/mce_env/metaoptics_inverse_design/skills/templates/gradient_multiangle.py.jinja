@@ -1,0 +1,61 @@
+# Multi-angle / multi-source gradient-based optimization
+# Optimise a structure for uniform performance across several incident angles.
+# Uses batched solver.solve(sources) for efficiency.
+
+import numpy as np
+import torch
+from torchrdit.solver import get_solver_builder
+from torchrdit.utils import create_material
+from torchrdit.constants import Algorithm, Precision
+from torchrdit.shapes import ShapeGenerator
+
+# --- Build solver (abbreviated — see full pipeline template for details) ---
+# ... builder setup, materials, lattice, build ...
+
+# --- Create sources for multiple angles ------------------------------------
+deg = np.pi / 180
+target_angles = [0.0, 5.0 * deg, 15.0 * deg]   # angles in radians
+sources = [
+    solver.add_source(theta=angle, phi=0.0, pte=1.0, ptm=0.0)
+    for angle in target_angles
+]
+
+# --- Differentiable parameter(s) ------------------------------------------
+# Ensure optimizable parameters are placed on the correct device
+radius = torch.tensor(0.20, requires_grad=True, device=device)
+
+# --- Optimiser -------------------------------------------------------------
+optimizer = torch.optim.Adam([radius], lr=0.02)
+
+for epoch in range(50):
+    optimizer.zero_grad()
+
+    # Regenerate mask from current radius
+    shapegen = ShapeGenerator(solver)
+    mask = shapegen.generate_circle_mask(center=[0, 0], radius=radius)
+    solver.update_er_with_mask(mask=mask, layer_index=0)
+
+    # Batch-solve for ALL angles in one call (preserves gradients)
+    results = solver.solve(sources)
+
+    # results.transmission has shape (n_sources, n_wavelengths)
+    trans_per_angle = results.transmission[:, 0]     # first wavelength
+    avg_trans = trans_per_angle.mean()
+    variance  = trans_per_angle.var()
+
+    # Loss: maximise average transmission, minimise angle-dependent variance
+    loss = -avg_trans + 0.5 * variance
+    loss.backward()
+    optimizer.step()
+
+    with torch.no_grad():
+        radius.data.clamp_(0.05, 0.40)
+
+# --- Final multi-angle solve ----------------------------------------------
+with torch.no_grad():
+    shapegen = ShapeGenerator(solver)
+    mask = shapegen.generate_circle_mask(center=[0, 0], radius=radius)
+    solver.update_er_with_mask(mask=mask, layer_index=0)
+    final_result = solver.solve(sources)
+    # final_result.reflection  shape: (n_sources, n_wavelengths)
+    # final_result.transmission  shape: (n_sources, n_wavelengths)

@@ -1,0 +1,13 @@
+# Basic imports for TorchRDIT
+import numpy as np
+import torch
+import matplotlib.pyplot as plt
+from torchrdit.solver import get_solver_builder
+from torchrdit.shapes import ShapeGenerator
+from torchrdit.utils import create_material
+from torchrdit.constants import Algorithm, Precision
+from torchrdit.results import SolverResults
+from torchrdit.viz import plot_layer, display_fitted_permittivity
+
+# NOTE: The device parameter is passed to solve_inverse_design(*, device: str = "cpu")
+# and should be used with .with_device(device) in the builder chain and for tensor creation.
